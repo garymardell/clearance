@@ -44,8 +44,9 @@ module Clearance
     #
     # @example
     #   sign_in(@user)
-    def sign_in(user)
-      clearance_session.sign_in user
+    def sign_in(user, domain = nil)
+      domain ||= request.host
+      clearance_session.sign_in user, domain
     end
 
     # Sign user out of cookie.
@@ -65,7 +66,8 @@ module Clearance
     #   @user = authenticate(params)
     def authenticate(params)
       Clearance.configuration.user_model.authenticate(params[:session][:email],
-                                                      params[:session][:password])
+                                                      params[:session][:password],
+                                                      params[:session][:account_id])
     end
 
     # Deny the user access if they are signed out.

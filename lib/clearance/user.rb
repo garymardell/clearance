@@ -31,8 +31,8 @@ module Clearance
       # @return [User, nil] authenticated user or nil
       # @example
       #   User.authenticate("email@example.com", "password")
-      def authenticate(email, password)
-        return nil  unless user = find_by_email(email.to_s.downcase)
+      def authenticate(email, password, account_id)
+        return nil  unless user = find_by_email_and_account_id(email.to_s.downcase, account_id)
         return user if     user.authenticated?(password)
       end
     end
@@ -48,7 +48,7 @@ module Clearance
       # :password must be present, confirmed
       included do
         validates_presence_of     :email, :unless => :email_optional?
-        validates_uniqueness_of   :email, :allow_blank => true
+        #validates_uniqueness_of   :email, :allow_blank => true
         validates_format_of       :email, :with => %r{^[a-z0-9!#\$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#\$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$}i, :allow_blank => true
 
         validates_presence_of     :password, :unless => :password_optional?

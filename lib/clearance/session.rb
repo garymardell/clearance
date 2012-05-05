@@ -15,9 +15,14 @@ module Clearance
         Clearance.configuration.user_model.find_by_remember_token(token)
       end
     end
+    
+    def current_domain
+      @current_domain || @env['SERVER_NAME']
+    end
 
-    def sign_in(user)
+    def sign_in(user, domain)
       @current_user = user
+      @current_domain = domain
     end
 
     def sign_out
@@ -27,12 +32,14 @@ module Clearance
     end
 
     def add_cookie_to_headers(headers)
+      
       if signed_in?
         Rack::Utils.set_cookie_header!(headers,
                                        REMEMBER_TOKEN_COOKIE,
                                        :value => current_user.remember_token,
                                        :expires => Clearance.configuration.cookie_expiration.call,
-                                       :path => "/")
+                                       :path => "/",
+                                       :domain => current_domain)
       end
     end
 
