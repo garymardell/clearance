@@ -28,8 +28,9 @@ module Clearance
       clearance_session.sign_in user
     end
 
-    def sign_in(user)
-      clearance_session.sign_in user
+    def sign_in(user, domain = nil)
+      domain ||= request.host
+      clearance_session.sign_in user, domain
     end
 
     def sign_out
